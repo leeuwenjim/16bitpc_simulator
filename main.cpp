@@ -1,6 +1,9 @@
 #include <iostream>
+#include "BinaryCode.h"
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+    Binary binarySet;
+    std::cout << binarySet.NOOP.getBinaryCode() << std::endl;
+    std::cout << binarySet.STRA.getBinaryCode() << std::endl;
     return 0;
 }

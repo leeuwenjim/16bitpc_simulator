@@ -3,4 +3,4 @@ project(16bitpc)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(16bitpc main.cpp BinaryCode.cpp)
+add_executable(16bitpc main.cpp)

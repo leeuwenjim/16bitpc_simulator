@@ -27,6 +27,8 @@
         void splitLine();
         void printInfo();
         std::string getRawLine();
+        std::string getOpcode();
+        std::string getLabel();
     };
 
     static line errorLine;

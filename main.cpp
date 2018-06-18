@@ -1,33 +1,46 @@
 #include <iostream>
 #include "file.hpp"
 #include <string>
-
+#include <map>
 
 void processFile(file rawFile){
 
     rawFile.toBegin();
 
-    //TODO SPLIT ALL LINES IN LABELS, OPCODES AND PARAMETERS
     while(rawFile.next()) {
         line & l = rawFile.get();
         l.splitLine();
     }
+
+    //TODO MATCH LABELS WITH LINE NUMBERS
+    std::map<std::string, int> labelMap;
+
+    int currentMachineLine = 0;
+
+    while(rawFile.next()) {
+        line & l = rawFile.get();
+        if (l.getLabel() != "") {
+            labelMap[l.getLabel()] = currentMachineLine;
+        }
+        if (l.getOpcode() != "") {
+            ++currentMachineLine;
+        }
+    }
+
+    //TODO FINAL COMPILING OF ALL LINES
+
 
     while(rawFile.next()) {
         line & l = rawFile.get();
         l.printInfo();
     }
 
-    //TODO PRECOMPILE ALL LINES
+    std::cout << std::endl;
 
+    for (const auto &row : labelMap) {
+        std::cout << "Key: " << row.first << "; Value: " << row.second << std::endl;
+    }
 
-    //TODO MATCH LABELS WITH LINE NUMBERS
-
-
-    //TODO FINAL COMPILING OF ALL LINES
-
-
-    //
 }
 
 int main(int argc, char* argv[]) {
@@ -51,4 +64,5 @@ int main(int argc, char* argv[]) {
 
     //std::getchar();
     return 0;
+
 }

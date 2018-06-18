@@ -85,7 +85,14 @@
 
     std::string line::getRawLine() {
         return rawLine;
+    }
 
+    std::string line::getOpcode() {
+        return opcode;
+    }
 
-}
+    std::string line::getLabel() {
+        return label;
+    }
+
 //}

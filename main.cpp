@@ -28,18 +28,11 @@ void processFile(file rawFile) {
         }
     }
 
-    //TODO FINAL COMPILING OF ALL LINES
-
+    translator lineTranslator(labelMap, currentMachineLine);
 
     while (rawFile.next()) {
         line &l = rawFile.get();
-        l.printInfo();
-    }
-
-    std::cout << std::endl;
-
-    for (const auto &row : labelMap) {
-        std::cout << "Key: " << row.first << "; Value: " << row.second << std::endl;
+        lineTranslator.assembleLine(l);
     }
 
 }
@@ -47,33 +40,32 @@ void processFile(file rawFile) {
 int main(int argc, char *argv[]) {
 
     std::cout << "starting 16 bit pc assembler" << std::endl;
-/*
 
     if (argc > 1) {
+        if (argv[1] == "/?") {
+            std::cout << "16 bit assembler" << std::endl;
+            std::cout << "Help menu" << std::endl;
+            std::cout << "usage of assembler: " << std::endl;
+            std::cout << "assemble16 [source file] [destination file]" << std::endl;
+            std::cout << std::endl;
+
+        }
+    }
+
+    if (argc > 2) {
 
         std::cout << "assembling file: " << argv[1] << std::endl;
 
         int fileLength = amountOfLinesInFile(argv[1]);
         file rawFile(argv[1], fileLength);
         processFile(rawFile);
+        rawFile.writeToBinaryFile(argv[2]);
 
     } else {
-        handleAssembleError(" argument count was not sufficient!");
+        handleAssembleError(" argument count was not sufficient! Try /?");
     }
-*/
 
-    //std::cout << decodeTOGGLESIGN() << std::endl;
-
-
-    //std::getchar();
-
-
-    std::string str_dec = "a2001, A Space Odyssey";
-
-    int i_dec = std::stoi (str_dec, nullptr, 0);
-
-    std::cout << str_dec << ": " << i_dec << std::endl;
-
+    std::getchar();
     return 0;
 
 }

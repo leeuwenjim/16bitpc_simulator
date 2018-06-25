@@ -40,6 +40,8 @@ public:
 
     void setMachineCode(std::string code);
 
+    std::string getMachineCode();
+
 };
 
 static line errorLine;

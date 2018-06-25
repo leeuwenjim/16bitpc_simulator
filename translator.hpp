@@ -15,28 +15,28 @@ class translator {
 private:
     std::map<std::string, int> labels;
     int amountOfMachineInstructions;
+
+    std::string decodeNOOP();
+    std::string decodeMOVE(const std::string & parameter1, const std::string & parameter2);
+    std::string decodeCLEAR(const std::string & registerCode);
+    std::string decodeLOADDIRECT(const std::string& parameter1, const std::string&  parameter2);
+    std::string decodeJUMP(const bool &carry, const bool &zero, const bool &equals, const bool & greater, const std::string & label);
+    std::string decodeCALL(const std::string & label);
+    std::string decodeRETURN();
+    std::string decodeSTORELOAD(bool write, const std::string & parameter1, const std::string & parameter2);
+    std::string decodeALU(alu_functions & function);
+    std::string decodeTOGGLESIGN();
+    std::string decodeHALT();
+
 public:
     translator(std::map<std::string, int> & labels, int amountOfMachineInstructions) :
             labels(labels), amountOfMachineInstructions(amountOfMachineInstructions) {};
 
     void assembleLine(line &l);
-
-    std::string decodeNOOP();
-    std::string decodeMOVE(std::string parameter1, std::string parameter2);
-    std::string decodeCLEAR(std::string registerCode);
-    std::string decodeLOADDIRECT(std::string parameter1, std::string parameter2);
-    std::string decodeJUMP(bool carry, bool zero, bool equals, bool greater, std::string label);
-    std::string decodeCALL(std::string label);
-    std::string decodeRETURN();
-    std::string decodeSTORELOAD(bool write, std::string parameter1, std::string parameter2);
-    std::string decodeALU(alu_functions function);
-    std::string decodeTOGGLESIGN();
-    std::string decodeHALT();
-
 };
 
-uint8_t registerToInt(std::string registerCode);
-int stringToInteger(std::string value);
+uint8_t registerToInt(const std::string & registerCode);
+uint16_t stringToInteger(const std::string & value);
 
 
 #endif //INC_16BITPC_TRANSLATOR_HPP

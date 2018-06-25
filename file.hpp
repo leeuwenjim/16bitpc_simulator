@@ -26,6 +26,8 @@ public:
     void toBegin();
 
     line &get();
+
+    void writeToBinaryFile(std::string fileName);
 };
 
 int amountOfLinesInFile(char *fileName);

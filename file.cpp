@@ -60,6 +60,22 @@ bool file::next() {
     }
 }
 
+void file::writeToBinaryFile(std::string fileName) {
+    std::cout << "starting to write to file: " << fileName << std::endl;
+    std::ofstream writeFile;
+    writeFile.open(fileName);
+    toBegin();
+    while(next()) {
+        line &l = get();
+        if (l.getMachineCode() == "")
+            continue;
+        writeFile << l.getMachineCode() << "\n";
+    }
+    writeFile.close();
+    std::cout << "written succesfully to file" << std::endl;
+
+}
+
 line &file::get() {
     if (currentPointer < 0 || currentPointer >= amountOfLines) {
         return errorLine;

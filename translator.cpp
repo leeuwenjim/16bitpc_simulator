@@ -7,6 +7,9 @@
 #include <algorithm>
 
 void translator::assembleLine(line &l) {
+    if (l.getOpcode() == "") {
+        return;
+    }
     std::string opcode = l.getOpcode();
     std::transform(opcode.begin(), opcode.end(), opcode.begin(), ::toupper);
     if (opcode == "NOOP") {
@@ -20,7 +23,30 @@ void translator::assembleLine(line &l) {
     } else if (opcode == "MOV") {
         l.setMachineCode(decodeMOVE(l.getParameter1(), l.getParameter2()));
     } else if (opcode == "JMP") {
-        //TODO FIGURE OUT PARAMETER 1 FORMAT
+        bool carry = false;
+        bool zero = false;
+        bool equals = false;
+        bool greater = false;
+
+        std::string par1ToUpper = l.getParameter1();
+        std::transform(par1ToUpper.begin(), par1ToUpper.end(), par1ToUpper.begin(), ::toupper);
+
+        if (par1ToUpper == "NULL"){
+            l.setMachineCode(decodeJUMP(carry, zero, equals, greater, l.getParameter2()));
+            return;
+        }
+
+        if (par1ToUpper.find('C') != std::string::npos)
+            carry = true;
+        if (par1ToUpper.find('Z') != std::string::npos)
+            zero = true;
+        if (par1ToUpper.find('E') != std::string::npos)
+            equals = true;
+        if (par1ToUpper.find('G') != std::string::npos)
+            greater = true;
+
+        l.setMachineCode(decodeJUMP(carry, zero, equals, greater, l.getParameter2()));
+
     } else if (opcode == "STR") {
         l.setMachineCode(decodeSTORELOAD(false, l.getParameter1(), l.getParameter2()));
     } else if (opcode == "LD") {
@@ -56,7 +82,7 @@ std::string translator::decodeNOOP() {
     return std::bitset<16>(0x0000).to_string();
 }
 
-std::string translator::decodeMOVE(std::string parameter1, std::string parameter2) {
+std::string translator::decodeMOVE(const std::string & parameter1, const std::string & parameter2) {
     if (parameter1 == "$a") {
         if (parameter2 == "$o") {
             return std::bitset<16> (0xc800).to_string();
@@ -78,18 +104,24 @@ std::string translator::decodeMOVE(std::string parameter1, std::string parameter
     }
 }
 
-std::string translator::decodeCLEAR(std::string registerCode) {
+std::string translator::decodeCLEAR(const std::string & registerCode) {
     uint16_t code = 0x1000;
     code |= (registerToInt(registerCode) << 10);
     return std::bitset<16>(code).to_string();
 }
 
-std::string translator::decodeLOADDIRECT(std::string parameter1, std::string parameter2) {
-    //TODO FIGURE THIS ONE OUT
-    return "";
+std::string translator::decodeLOADDIRECT(const std::string & parameter1, const std::string & parameter2) {
+
+    uint16_t code = 0x9000;
+    code |= (registerToInt(parameter1) << 10);
+    uint16_t data = stringToInteger(parameter2);
+    data &= 0x03FF;
+    code |= data;
+
+    return std::bitset<16> (code).to_string();
 }
 
-std::string translator::decodeJUMP(bool carry, bool zero, bool equals, bool greater, std::string label) {
+std::string translator::decodeJUMP(const bool & carry, const bool & zero, const bool & equals, const bool & greater, const std::string & label) {
     uint16_t code = 0x4000;
     if (carry) {
         code |= (1 << 13);
@@ -111,7 +143,7 @@ std::string translator::decodeJUMP(bool carry, bool zero, bool equals, bool grea
 
 }
 
-std::string translator::decodeCALL(std::string label) {
+std::string translator::decodeCALL(const std::string & label) {
     if (labels.count(label) == 0) {
         handleAssembleError("Unexcepted label found: " + label);
     }
@@ -124,7 +156,7 @@ std::string translator::decodeRETURN() {
     return std::bitset<16> (8800).to_string();
 }
 
-std::string translator::decodeSTORELOAD(bool write, std::string parameter1, std::string parameter2) {
+std::string translator::decodeSTORELOAD(bool write, const std::string & parameter1, const std::string & parameter2) {
     uint16_t code = 0x2000;
     code |= (stringToInteger(parameter2) + amountOfMachineInstructions);
     code |= registerToInt(parameter1) << 10;
@@ -134,7 +166,7 @@ std::string translator::decodeSTORELOAD(bool write, std::string parameter1, std:
     return std::bitset<16> (code).to_string();
 }
 
-std::string translator::decodeALU(alu_functions function) {
+std::string translator::decodeALU(alu_functions & function) {
     uint16_t code = 0xa000;
     code |= (function.getCode() << 10);
     return std::bitset<16> (code).to_string();
@@ -148,7 +180,7 @@ std::string translator::decodeHALT() {
     return std::bitset<16> (0xfc00).to_string();
 }
 
-uint8_t registerToInt(std::string registerCode) {
+uint8_t registerToInt(const std::string & registerCode) {
     if (registerCode == "$a") {
         return 0;
     } else if (registerCode == "$b") {
@@ -160,10 +192,10 @@ uint8_t registerToInt(std::string registerCode) {
     }
 }
 
-int stringToInteger(std::string value) {
-    int number = -1;
+uint16_t stringToInteger(const std::string& value) {
+    uint16_t number = 0;
     try {
-        number = std::stoi(value, nullptr, 0);
+        number = (uint16_t ) std::stoi(value, nullptr, 0);
     } catch (int e) {
         handleAssembleError("an illigal number was found during assembling. Found number: " + value);
     }

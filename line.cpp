@@ -103,3 +103,7 @@ std::string line::getParameter2() {
 void line::setMachineCode(std::string code) {
     machineCode = code;
 }
+
+std::string line::getMachineCode() {
+    return machineCode;
+}

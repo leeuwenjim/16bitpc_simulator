@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
 
     std::cout << "starting 16 bit pc assembler" << std::endl;
 
-    if (argc >1)  {
+    if (argc == 1)  {
         if (std::string(argv[1]) == "help") {
             std::cout << "16 bit assembler" << std::endl;
             std::cout << "Help menu" << std::endl;

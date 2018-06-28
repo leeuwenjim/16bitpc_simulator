@@ -3,7 +3,6 @@
 #include <string>
 #include <map>
 #include "translator.hpp"
-//#include "errorHandler.hpp"
 
 void processFile(file rawFile) {
 
@@ -40,6 +39,8 @@ void processFile(file rawFile) {
 int main(int argc, char *argv[]) {
 
     std::cout << "starting 16 bit pc assembler" << std::endl;
+    std::cout << "Created by Jim van Leeuwen on 28-6-2018" << std::endl;
+    std::cout << "Use this program only for educational purposes" << std::endl;
 
     if (argc == 1)  {
         if (std::string(argv[1]) == "help") {
